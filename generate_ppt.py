@@ -725,10 +725,10 @@ def create_deck():
     fp.font.color.rgb = NAVY_TEXT
 
     drivers = [
-        ("1. Promo (Active Campaign)", "28.4%", "+34.2% Sales Uplift", BLUE_ACCENT),
+        ("1. Promo (Active Campaign)", "28.4%", "+38.8% Sales Uplift on Open Stores", BLUE_ACCENT),
         ("2. Store Identifier", "21.6%", "Captures fixed location & baseline footfall", PURPLE_ACCENT),
         ("3. Competition Distance", "15.8%", "Proximity creates intense market rivalry", EMERALD_GREEN),
-        ("4. DayOfWeek (Mon - Sun)", "12.3%", "High Saturday spikes & Sunday closures", CYAN_ACCENT),
+        ("4. DayOfWeek (Mon - Sun)", "12.3%", "Monday & Sunday lead peak open sales (₹7.40L)", CYAN_ACCENT),
         ("5. WeekOfYear & Month", "9.7%", "Annual pay cycles & holiday retail surges", AMBER_ACCENT),
         ("6. StoreType & Assortment", "7.1%", "Type B flagships exhibit 2.4x standard volume", NAVY_TEXT),
         ("7. Cyclical Sine/Cosine", "5.1%", "Continuous calendar boundary smoothing", MUTED_TEXT)
@@ -760,9 +760,9 @@ def create_deck():
     sp.font.color.rgb = BLUE_ACCENT
 
     insights = [
-        ("The Promotion Multiplier", "Weekday promotions generate an immediate average daily revenue lift of ₹2,050 (€2,277). Stores with Promo=1 must pre-stock inventory at least 48 hours prior to campaign launch to prevent stockouts."),
-        ("The Proximity Paradox", "Stores located under 500m from a competitor experience high promotional sensitivity. When running promotions, they cannibalize competitor volume; when off-promo, sales dip sharply below baseline."),
-        ("Flagship Type B Anomalies", "Type B stores operate on non-standard retail calendars (open Sundays in airports/train stations). Applying standard Type A rules underestimates their sales by over 60% without categorical features.")
+        ("Sunday Open-Store Peak (₹7.40 Lakhs)", "While general retail closes on Sundays, stores operating on Sunday (transit flagships) generate top network daily sales of ₹7,40,225 (€8,225), matching Monday post-weekend surges."),
+        ("The Promotion Multiplier (+38.8%)", "Weekday promotions generate an immediate revenue surge. Stores with Promo=1 must pre-stock inventory at least 48 hours prior to campaign launch to prevent stockouts."),
+        ("The Proximity Paradox", "Stores located under 500m from a competitor experience high promotional sensitivity. When running promotions, they cannibalize competitor volume; when off-promo, sales dip sharply below baseline.")
     ]
     for h, b in insights:
         hp = stf.add_paragraph()

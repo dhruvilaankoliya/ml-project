@@ -34,7 +34,11 @@ if not feat_df.empty:
         orientation="h",
         title="Top 15 Most Influential Features (LightGBM Split Weight)",
         color="Importance",
-        color_continuous_scale="Blues"
+        color_continuous_scale=["#38bdf8", "#0284c7", "#1d4ed8"]
+    )
+    fig_feat.update_traces(
+        marker_line_color="#0f172a",
+        marker_line_width=1.1
     )
     fig_feat.update_layout(
         template="plotly_white",

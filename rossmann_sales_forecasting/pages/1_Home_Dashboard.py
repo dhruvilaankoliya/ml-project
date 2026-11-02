@@ -73,65 +73,102 @@ if os.path.exists(monthly_path):
 
 c_left, c_right = st.columns(2)
 
-# Chart 2: Weekday Sales Pattern
+# Chart 2: Weekday Sales Pattern (Open Stores)
 with c_left:
-    st.markdown("### 📆 Sales by Weekday")
+    st.markdown("### 📆 Average Sales by Day of Week (Open Stores)")
     if os.path.exists(weekday_path):
         weekday_df = pd.read_csv(weekday_path)
-        weekday_df["mean"] = weekday_df["mean"] * EUR_TO_INR
+        weekday_df["mean_inr"] = weekday_df["mean"] * EUR_TO_INR
+        weekday_df["FormattedSales"] = weekday_df["mean_inr"].apply(lambda v: f"₹{v/1e5:.2f} L")
+        
+        # High-contrast highlight: Peak sales days (Monday & Sunday) in dark royal blue (#1d4ed8), standard in vivid blue (#0284c7)
+        weekday_df["Highlight"] = weekday_df["DayName"].apply(
+            lambda d: "Peak Sales Days (Mon & Sun)" if d in ["Monday", "Sunday"] else "Standard Weekdays"
+        )
+        
         fig_week = px.bar(
             weekday_df,
             x="DayName",
-            y="mean",
-            title="Average Daily Sales by Day of Week",
-            labels={"DayName": "Day of Week", "mean": "Average Sales (₹)"},
-            color="mean",
-            color_continuous_scale="Blues"
+            y="mean_inr",
+            text="FormattedSales",
+            title="Monday & Sunday Lead Peak Store Revenue",
+            labels={"DayName": "Day of Week", "mean_inr": "Average Sales (₹)", "Highlight": "Day Classification"},
+            color="Highlight",
+            color_discrete_map={
+                "Peak Sales Days (Mon & Sun)": "#1d4ed8",  # Bold high-contrast navy/royal blue
+                "Standard Weekdays": "#0284c7"            # Vivid cerulean blue (never faint or white)
+            }
+        )
+        fig_week.update_traces(
+            textposition="outside",
+            textfont=dict(size=12, color="#0f172a", family="Inter"),
+            marker_line_color="#0f172a",
+            marker_line_width=1.2,
+            cliponaxis=False
         )
         fig_week.update_layout(
             template="plotly_white",
-            showlegend=False,
-            height=360,
-            margin=dict(l=20, r=20, t=40, b=20)
+            showlegend=True,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            height=380,
+            yaxis=dict(range=[0, max(weekday_df["mean_inr"]) * 1.18]),
+            margin=dict(l=20, r=20, t=50, b=20)
         )
         st.plotly_chart(fig_week, use_container_width=True)
+        st.caption("ℹ️ *Matching Colab notebook: Operating stores on Sunday (₹7.40 L) and Monday (₹7.39 L) record peak average sales.*")
 
 # Chart 3: Promotion vs. Non-Promotion Sales
 with c_right:
-    st.markdown("### 🏷️ Promotion Impact")
+    st.markdown("### 🏷️ Promotion Impact (Open Stores)")
     if os.path.exists(promo_path):
         promo_df = pd.read_csv(promo_path)
-        promo_df["mean"] = promo_df["mean"] * EUR_TO_INR
-        promo_df["Promotion"] = promo_df["Promo"].map({0: "No Promo", 1: "Active Promo"})
+        promo_df["mean_inr"] = promo_df["mean"] * EUR_TO_INR
+        promo_df["FormattedSales"] = promo_df["mean_inr"].apply(lambda v: f"₹{v/1e5:.2f} L")
+        promo_df["Promotion"] = promo_df["Promo"].map({0: "No Promo (Standard)", 1: "Active Promo (Campaign)"})
+        
         fig_promo = px.bar(
             promo_df,
             x="Promotion",
-            y="mean",
+            y="mean_inr",
+            text="FormattedSales",
             title="Average Sales: Promotion vs. Standard Days",
-            labels={"Promotion": "Promotion Status", "mean": "Average Sales (₹)"},
+            labels={"Promotion": "Promotion Status", "mean_inr": "Average Sales (₹)"},
             color="Promotion",
-            color_discrete_map={"No Promo": "#94a3b8", "Active Promo": "#0284c7"}
+            color_discrete_map={
+                "No Promo (Standard)": "#475569",     # Crisp dark slate (high contrast, never white)
+                "Active Promo (Campaign)": "#2563eb"  # Electric royal blue
+            }
         )
-        # Calculate uplift
-        no_p = promo_df[promo_df["Promo"] == 0]["mean"].values[0]
-        p = promo_df[promo_df["Promo"] == 1]["mean"].values[0]
+        no_p = promo_df[promo_df["Promo"] == 0]["mean_inr"].values[0]
+        p = promo_df[promo_df["Promo"] == 1]["mean_inr"].values[0]
         uplift = ((p - no_p) / no_p) * 100
+        
         fig_promo.add_annotation(
             text=f"Promo Uplift: +{uplift:.1f}%",
-            x="Active Promo",
-            y=p,
+            x="Active Promo (Campaign)",
+            y=p * 1.05,
             showarrow=True,
             arrowhead=2,
-            arrowcolor="#0369a1",
-            font=dict(size=12, color="#0369a1", family="Inter")
+            arrowcolor="#1d4ed8",
+            font=dict(size=13, color="#1d4ed8", family="Inter")
+        )
+        fig_promo.update_traces(
+            textposition="outside",
+            textfont=dict(size=12, color="#0f172a", family="Inter"),
+            marker_line_color="#0f172a",
+            marker_line_width=1.2,
+            cliponaxis=False
         )
         fig_promo.update_layout(
             template="plotly_white",
             showlegend=False,
-            height=360,
-            margin=dict(l=20, r=20, t=40, b=20)
+            height=380,
+            yaxis=dict(range=[0, max(promo_df["mean_inr"]) * 1.2]),
+            margin=dict(l=20, r=20, t=50, b=20)
         )
         st.plotly_chart(fig_promo, use_container_width=True)
+        st.caption(f"ℹ️ *Active promotional campaigns generate a substantial +{uplift:.1f}% surge in average daily store revenue.*")
+
 
 # Chart 4: Sales by Store Type
 st.markdown("### 🏬 Network Revenue by Store Type")

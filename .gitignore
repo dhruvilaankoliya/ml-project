@@ -37,3 +37,8 @@ env/
 
 # Streamlit secrets
 .streamlit/secrets.toml
+
+# Office temp lock files
+~$*.pptx
+~$*.docx
+~$*.xlsx

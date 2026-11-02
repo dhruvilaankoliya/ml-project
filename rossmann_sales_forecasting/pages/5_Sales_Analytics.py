@@ -73,11 +73,24 @@ with tab1:
                 w_df,
                 x="DayName",
                 y="mean",
-                title="Sales Volatility Across Days of the Week (₹)",
+                title="Average Sales Across Days of Week (₹) - Open Stores",
+                text=w_df["mean"].apply(lambda v: f"₹{v/1e5:.2f} L"),
                 color="DayName",
-                color_continuous_scale="Blues"
+                color_discrete_sequence=["#1d4ed8", "#0284c7", "#0284c7", "#0284c7", "#0284c7", "#64748b", "#1d4ed8"]
             )
-            fig_w.update_layout(template="plotly_white", height=350, showlegend=False)
+            fig_w.update_traces(
+                textposition="outside",
+                textfont=dict(size=11, color="#0f172a", family="Inter"),
+                marker_line_color="#0f172a",
+                marker_line_width=1.1,
+                cliponaxis=False
+            )
+            fig_w.update_layout(
+                template="plotly_white",
+                height=360,
+                showlegend=False,
+                yaxis=dict(range=[0, max(w_df["mean"]) * 1.18])
+            )
             st.plotly_chart(fig_w, use_container_width=True)
 
     with c_w2:
@@ -91,9 +104,13 @@ with tab1:
             x="DayOfMonth",
             y="AvgSales",
             title="Day-of-Month Sales Velocity (Payday Effect in ₹)",
-            color_discrete_sequence=["#38bdf8"]
+            color_discrete_sequence=["#0284c7"]
         )
-        fig_dom.update_layout(template="plotly_white", height=350)
+        fig_dom.update_traces(
+            marker_line_color="#0369a1",
+            marker_line_width=1.0
+        )
+        fig_dom.update_layout(template="plotly_white", height=360)
         st.plotly_chart(fig_dom, use_container_width=True)
 
 # Tab 2: Promotion Lift
