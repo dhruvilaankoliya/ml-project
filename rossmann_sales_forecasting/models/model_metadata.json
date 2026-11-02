@@ -1,0 +1,88 @@
+{
+    "best_model": "LightGBM",
+    "validation_metrics": {
+        "MAE": 828.675,
+        "RMSE": 1159.5,
+        "RMSPE (%)": 19.659
+    },
+    "feature_importances": {
+        "DayOfWeek_6": 3257.0,
+        "Promo": 2243.0,
+        "WeekOfYear": 1364.0,
+        "CompetitionDistance": 1295.0,
+        "DayOfWeek_1": 1176.0,
+        "Day": 1124.0,
+        "Month": 463.0,
+        "CompetitionOpenSinceYear": 391.0,
+        "DayOfWeek_5": 376.0,
+        "CompetitionOpenSinceMonth": 357.0,
+        "Promo2SinceWeek": 311.0,
+        "Promo2SinceYear": 287.0,
+        "DayOfWeek_2": 194.0,
+        "Assortment_a": 180.0,
+        "DayOfWeek_3": 179.0,
+        "DayOfWeek_7": 173.0,
+        "DayOfWeek_4": 163.0,
+        "StoreType_a": 150.0,
+        "SchoolHoliday": 143.0,
+        "IsWeekend": 136.0,
+        "StoreType_b": 135.0,
+        "Store_1114": 133.0,
+        "Store_817": 123.0,
+        "Promo2": 110.0,
+        "Store_251": 107.0,
+        "Store_513": 105.0,
+        "StoreType_c": 100.0,
+        "Store_788": 99.0,
+        "Store_262": 98.0,
+        "Store_842": 90.0
+    },
+    "training_records": 1017209,
+    "unique_stores": 1115,
+    "date_range": {
+        "start": "2013-01-01",
+        "end": "2015-07-31"
+    },
+    "all_model_benchmarks": [
+        {
+            "Model": "LightGBM",
+            "MAE": 782.961,
+            "RMSE": 1100.433,
+            "RMSPE (%)": 18.282,
+            "Ranking": 1,
+            "Status": "Best Model"
+        },
+        {
+            "Model": "Tuned XGBoost",
+            "MAE": 867.033,
+            "RMSE": 1183.891,
+            "RMSPE (%)": 21.122,
+            "Ranking": 2,
+            "Status": "Runner Up"
+        },
+        {
+            "Model": "XGBoost (Default)",
+            "MAE": 1147.503,
+            "RMSE": 1487.476,
+            "RMSPE (%)": 28.323,
+            "Ranking": 3,
+            "Status": "Baseline Tree"
+        },
+        {
+            "Model": "Random Forest",
+            "MAE": 1539.585,
+            "RMSE": 2044.817,
+            "RMSPE (%)": 38.541,
+            "Ranking": 4,
+            "Status": "Ensemble"
+        },
+        {
+            "Model": "Median Baseline",
+            "MAE": 2204.307,
+            "RMSE": 3115.111,
+            "RMSPE (%)": 51.291,
+            "Ranking": 5,
+            "Status": "Naive Baseline"
+        }
+    ]
+}
