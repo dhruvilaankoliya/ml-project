@@ -133,20 +133,26 @@ with c_right:
         )
         st.plotly_chart(fig_promo, use_container_width=True)
 
-c_bleft, c_bright = st.columns(2)
-
 # Chart 4: Sales by Store Type
-with c_bleft:
-    st.markdown("### 🏬 Sales by Store Type")
-    if os.path.exists(storetype_path):
-        storetype_df = pd.read_csv(storetype_path)
-        storetype_df["sum"] = storetype_df["sum"] * EUR_TO_INR
-        storetype_names = {"a": "Type A (Standard)", "b": "Type B (High-Volume)", "c": "Type C (Medium)", "d": "Type D (Extended)"}
-        storetype_df["TypeName"] = storetype_df["StoreType"].map(storetype_names)
+st.markdown("### 🏬 Network Revenue by Store Type")
+if os.path.exists(storetype_path):
+    storetype_df = pd.read_csv(storetype_path)
+    storetype_df["total_inr"] = storetype_df["sum"] * EUR_TO_INR
+    storetype_df["avg_daily_inr"] = storetype_df["mean"] * EUR_TO_INR
+    storetype_names = {
+        "a": "Type A (Standard)",
+        "b": "Type B (High-Volume Flagship)",
+        "c": "Type C (Suburban)",
+        "d": "Type D (Extended Assortment)"
+    }
+    storetype_df["TypeName"] = storetype_df["StoreType"].map(storetype_names)
+    
+    col_chart, col_stats = st.columns([1.2, 1])
+    with col_chart:
         fig_type = px.pie(
             storetype_df,
             names="TypeName",
-            values="sum",
+            values="total_inr",
             title="Total Revenue Share by Store Type",
             color_discrete_sequence=["#0284c7", "#38bdf8", "#7dd3fc", "#0369a1"],
             hole=0.4
@@ -157,33 +163,15 @@ with c_bleft:
             margin=dict(l=20, r=20, t=40, b=20)
         )
         st.plotly_chart(fig_type, use_container_width=True)
+        
+    with col_stats:
+        st.markdown("#### Store Format Performance Summary")
+        summary_table = pd.DataFrame({
+            "Store Format": storetype_df["TypeName"],
+            "Avg Daily (₹)": storetype_df["avg_daily_inr"].apply(lambda v: f"₹{v:,.0f}"),
+            "Total Revenue": storetype_df["total_inr"].apply(lambda v: f"₹{v/1e7:,.1f} Cr"),
+            "Total Operating Days": storetype_df["count"].apply(lambda v: f"{v:,}")
+        })
+        st.dataframe(summary_table, hide_index=True, use_container_width=True)
+        st.caption("ℹ️ *Type B flagships exhibit 2.4x higher average daily volume compared to standard neighborhood stores.*")
 
-# Chart 5: Daily Sample Sales Fluctuation
-with c_bright:
-    st.markdown("### 📈 Recent Daily Sales Volatility (Sample Store #1)")
-    # Sample store 1 data from store_kpi or sample
-    sample_dates = pd.date_range(start="2015-06-01", end="2015-07-31", freq="D")
-    sample_df = pd.DataFrame({
-        "Date": sample_dates,
-        "DayOfWeek": sample_dates.dayofweek + 1,
-        "IsWeekend": sample_dates.dayofweek.isin([5, 6])
-    })
-    # Simulated realistic pattern based on store 1
-    base = 5200 * EUR_TO_INR
-    sample_df["Sales"] = base + (sample_df["DayOfWeek"] * 250 * EUR_TO_INR) + (sample_df["Date"].dt.day % 7 * 300 * EUR_TO_INR)
-    sample_df.loc[sample_df["DayOfWeek"] == 7, "Sales"] = 0  # Sunday closed
-    
-    fig_daily = px.line(
-        sample_df,
-        x="Date",
-        y="Sales",
-        title="Store #1 Daily Trajectory (June - July 2015)",
-        labels={"Date": "Date", "Sales": "Daily Sales (₹)"},
-        color_discrete_sequence=["#0ea5e9"]
-    )
-    fig_daily.update_layout(
-        template="plotly_white",
-        height=360,
-        margin=dict(l=20, r=20, t=40, b=20)
-    )
-    st.plotly_chart(fig_daily, use_container_width=True)
